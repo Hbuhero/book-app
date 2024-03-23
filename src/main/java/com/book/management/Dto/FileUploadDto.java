@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class FileDto {
+public class FileUploadDto {
     private String filename;
     private String author;
     private String category;

@@ -1,9 +1,9 @@
 package com.book.management.Exception;
 
-public class CustomerAlreadyExistException extends RuntimeException{
-    private String errorMsg;
+public class UserAlreadyExistException extends RuntimeException{
 
-    public CustomerAlreadyExistException(String errorMsg){
+
+    public UserAlreadyExistException(String errorMsg){
         super(errorMsg);
     }
 }

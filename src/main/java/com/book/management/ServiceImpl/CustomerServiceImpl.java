@@ -1,13 +1,16 @@
 package com.book.management.ServiceImpl;
 
 import com.book.management.Dto.CustomerDto;
-import com.book.management.Exception.CustomerAlreadyExistException;
+import com.book.management.Dto.CustomerUpdateProfileDto;
+import com.book.management.Exception.UserAlreadyExistException;
 import com.book.management.Exception.UserNotFoundException;
 import com.book.management.Model.Customer;
 
 import com.book.management.Repository.CustomerRepository;
 import com.book.management.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> optionalUser = customerRepository.findByUsername(customerdto.getUsername());
 
         if (optionalUser.isPresent()){
-            throw new CustomerAlreadyExistException("User Already Exist");
+            throw new UserAlreadyExistException("User Already Exist");
         }
 
         Customer customer = Customer.builder()
@@ -57,4 +60,21 @@ public class CustomerServiceImpl implements CustomerService {
 
         return "Successfully changed Password";
     }
+
+    @Override
+    public ResponseEntity<?> updateProfile(CustomerUpdateProfileDto customerUpdateProfileDto, Long id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(()-> new UserNotFoundException("Not Found"));
+
+        customer.setCountry(customerUpdateProfileDto.getCountry());
+        customer.setName(customerUpdateProfileDto.getName());
+        customer.setEmail(customerUpdateProfileDto.getEmail());
+        customer.setUsername(customerUpdateProfileDto.getUsername());
+        customer.setPhoneNumber(customerUpdateProfileDto.getPhoneNumber());
+
+        customerRepository.save(customer);
+
+        return new ResponseEntity<>("Profile Update Successful", HttpStatusCode.valueOf(200));
+    }
+
+
 }

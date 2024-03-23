@@ -1,6 +1,7 @@
 package com.book.management.Exception;
 
-public class PasswordDoesNotMatchException {
-    public PasswordDoesNotMatchException(String passwordDoesNotMatch) {
+public class PasswordDoesNotMatchException extends RuntimeException{
+    public PasswordDoesNotMatchException(String errorMsg) {
+        super(errorMsg);
     }
 }
