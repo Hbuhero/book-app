@@ -2,6 +2,7 @@ package com.book.management.Controller;
 
 import com.book.management.Dto.CustomerDto;
 import com.book.management.Dto.CustomerUpdateProfileDto;
+import com.book.management.Dto.PasswordDto;
 import com.book.management.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -17,19 +18,19 @@ public class CustomerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody CustomerDto customerdto){
-        String responseBody = customerService.registerUser(customerdto);
+    public ResponseEntity<?> registerUser(@RequestBody CustomerDto customerdto){
 
-        return new ResponseEntity<>(responseBody,HttpStatusCode.valueOf(200));
+
+        return customerService.registerUser(customerdto);
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody CustomerDto customerDto){
-        String response = customerService.changePassword(customerDto);
-        return new ResponseEntity<>(response,HttpStatusCode.valueOf(200));
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDto passwordDto){
+
+        return customerService.changePassword(passwordDto);
     }
 
-    @PostMapping("/update-profile/{id}")
+    @PostMapping("/{id}/update-profile")
     public ResponseEntity<?> updateProfile(@RequestBody CustomerUpdateProfileDto customerUpdateProfileDto, @PathVariable Long id){
         return customerService.updateProfile(customerUpdateProfileDto, id);
     }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<body>
+<h1>Sign Up</h1>
+<form id="signupForm" action="http://localhost:8080/api/v1/publisher/register" method="post">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+    </div>
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Username:</label>
+        <input type="text" name="password" id="password" required>
+    </div>
+    <div class="form-group">
+        <label for="phonenumber">Phone Number:</label>
+        <input type="tel" name="phonenumber" id="phonenumber" required>
+    </div>
+    <div class="form-group">
+        <label for="country">Country:</label>
+        <input type="text" name="country" id="country" required>
+    </div>
+    <div class="form-group">
+        <label for="street">Street Address:</label>
+        <input type="text" name="street" id="street" required>
+    </div>
+    <div class="form-group">
+        <label for="postalcode">Postal Code:</label>
+        <input type="text" name="postalcode" id="postalcode" required>
+    </div>
+    <div class="form-group">
+        <label for="about">About You:</label>
+        <textarea name="about" id="about" rows="5" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+    </div>
+    <button type="button" onclick="submitSignupForm()">Sign Up</button>
+</form>
+<script>
+    function submitSignupForm() {
+        const form = document.getElementById('signupForm');
+        const formData = new FormData(form);  // Create FormData object for the request body
+        const jsonData = {};  // Create an object to hold form data
+
+        // Loop through form elements and build JSON object
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        // Send the JSON data as the request body (adjust based on your needs)
+        fetch('http://localhost:8080/api/v1/publisher/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'  // Set content type to JSON
+            },
+            body: JSON.stringify(jsonData)  // Stringify the data object
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful signup (e.g., display success message, redirect to another page)
+                    console.log('Sign Up Successful!');
+                } else {
+                    // Handle signup errors
+                    console.error('Sign Up Failed:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+</body>
+</html>

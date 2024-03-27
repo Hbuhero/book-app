@@ -10,15 +10,13 @@ import org.springframework.http.ResponseEntity;
 public interface PublisherService {
     ResponseEntity<?> getPublisherById(Long id);
 
-    ResponseEntity<?> getPublisherByName(String name);
+
 
     ResponseEntity<?> register(PublisherDto publisherDto);
 
     ResponseEntity<?> forgotPassword(PasswordDto passwordDto);
 
-    ResponseEntity<?> getBooks(Long id);
 
-    ResponseEntity<?> getBooksByName(String name);
 
-    ResponseEntity<?> updateProfile(PublisherUpdateDto publisherUpdateDto);
+    ResponseEntity<?> updateProfile(PublisherUpdateDto publisherUpdateDto, Long id);
 }

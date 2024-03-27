@@ -11,6 +11,7 @@ import com.book.management.Model.Publisher;
 import com.book.management.Repository.FileRepository;
 import com.book.management.Repository.PublisherRepository;
 import com.book.management.Service.FileService;
+import org.hibernate.query.Page;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,8 +132,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ResponseEntity<?> updateFileDetails(FileUpdateDto fileUpdateDto, Long id) {
-        Optional<File> optionalFile = fileRepository.findById(id);
+    public ResponseEntity<?> updateFileDetails(FileUpdateDto fileUpdateDto, Long fileid) {
+        Optional<File> optionalFile = fileRepository.findById(fileid);
         if (optionalFile.isEmpty()){
             return new ResponseEntity<>(new FileNotFoundException("File Not Found"), HttpStatusCode.valueOf(404));
         }
@@ -146,6 +147,16 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(file);
 
         return new ResponseEntity<>("File Details Update Complete", HttpStatusCode.valueOf(200));
+    }
+
+    @Override
+    public ResponseEntity<?> getByCategory(String category) {
+        List<File> filesByCategory = fileRepository.findByCategory(category, Page.first(4));
+        if (filesByCategory.isEmpty()){
+            return new ResponseEntity<>(new NullPointerException(), HttpStatusCode.valueOf(404));
+        }
+
+        return new ResponseEntity<>(filesByCategory, HttpStatusCode.valueOf(200));
     }
 
     public String toMB(long number){

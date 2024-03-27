@@ -28,19 +28,15 @@ public class PublisherController {
         return publisherService.getPublisherById(id);
     }
 
-//    @GetMapping("/{name}")
-//    public ResponseEntity<?> getPublisherByName(@PathVariable String name){
-//        return publisherService.getPublisherByName(name);
-//    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody PublisherDto publisherDto){
         return publisherService.register(publisherDto);
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<?> updateProfile(@RequestBody PublisherUpdateDto publisherUpdateDto){
-        return publisherService.updateProfile(publisherUpdateDto);
+    @PostMapping("/{id}/update")
+    public ResponseEntity<?> updateProfile(@PathVariable Long id, @RequestBody PublisherUpdateDto publisherUpdateDto){
+        return publisherService.updateProfile(publisherUpdateDto, id);
     }
 
     @PostMapping("/forgot-password")
@@ -49,14 +45,7 @@ public class PublisherController {
 
     }
 
-    @GetMapping("/{id}/books")
-    public ResponseEntity<?> getBooks(@PathVariable Long id){
-        return publisherService.getBooks(id);
-    }
 
-    @GetMapping("/books/")
-    public ResponseEntity<?> getBooksByPublisher(@RequestParam String name){
-        return publisherService.getBooksByName(name);
-    }
+
 
 }

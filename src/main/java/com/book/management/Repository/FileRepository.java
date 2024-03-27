@@ -1,6 +1,7 @@
 package com.book.management.Repository;
 
 import com.book.management.Model.File;
+import org.hibernate.query.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,4 +21,7 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     @Query(value = "SELECT * FROM files WHERE filename LIKE %?1%", nativeQuery = true)
     List<File> findFilesByName(String filename);
+
+    @Query(value = "SELECT * FROM files WHERE category = UPPER(?1)", nativeQuery = true)
+    List<File> findByCategory(String category, Page page);
 }

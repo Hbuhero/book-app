@@ -25,5 +25,7 @@ public interface FileService {
 
     ResponseEntity<?> getFilesByFilename(String filename);
 
-    ResponseEntity<?> updateFileDetails(FileUpdateDto fileUploadDto, Long id);
+    ResponseEntity<?> updateFileDetails(FileUpdateDto fileUploadDto, Long fileid);
+
+    ResponseEntity<?> getByCategory(String category);
 }

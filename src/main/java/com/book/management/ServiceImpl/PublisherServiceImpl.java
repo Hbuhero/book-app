@@ -9,6 +9,8 @@ import com.book.management.Exception.UserAlreadyExistException;
 import com.book.management.Exception.UserNotFoundException;
 import com.book.management.Exception.UsernameAlreadyExists;
 import com.book.management.Model.Publisher;
+import com.book.management.Model.Roles;
+import com.book.management.Repository.CustomerRepository;
 import com.book.management.Repository.PublisherRepository;
 import com.book.management.Service.PublisherService;
 
@@ -19,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,10 +31,13 @@ public class PublisherServiceImpl implements PublisherService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final CustomerRepository customerRepository;
+
     @Autowired
-    public PublisherServiceImpl(PublisherRepository publisherRepository, PasswordEncoder passwordEncoder) {
+    public PublisherServiceImpl(PublisherRepository publisherRepository, PasswordEncoder passwordEncoder, CustomerRepository customerRepository) {
         this.publisherRepository = publisherRepository;
         this.passwordEncoder = passwordEncoder;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -45,20 +51,10 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
-    public ResponseEntity<?> getPublisherByName(String name) {
-        Optional<Publisher> optionalPublisher = publisherRepository.findByName(name);
-        if (optionalPublisher.isEmpty()){
-            return new ResponseEntity<>(new UserNotFoundException("Publisher Not Found"), HttpStatusCode.valueOf(404));
-        }
-        return new ResponseEntity<>(optionalPublisher.get(), HttpStatusCode.valueOf(200));
-    }
-
-    @Override
     public ResponseEntity<?> register(PublisherDto publisherDto) {
-        Optional<Publisher> optionalPublisher = publisherRepository.findByName(publisherDto.getName());
 
-        if(optionalPublisher.isPresent()){
-            return new ResponseEntity<>(new UserAlreadyExistException("User Already Exist"), HttpStatusCode.valueOf(409));
+        if(customerRepository.existsByUsername(publisherDto.getUsername()) || publisherRepository.existsByUsername(publisherDto.getUsername())){
+            return new ResponseEntity<>(new UsernameAlreadyExists("Username Found"), HttpStatusCode.valueOf(409));
         }
 
          var publisher = Publisher.builder()
@@ -70,8 +66,10 @@ public class PublisherServiceImpl implements PublisherService {
                   .postalCode(publisherDto.getPostalCode())
                   .username(publisherDto.getUsername())
                   .about(publisherDto.getAbout())
+                 .roles(List.of(Roles.PUBLISHER))
                   .build();
         publisherRepository.save(publisher);
+
         return new ResponseEntity<>("Registered Successfully",HttpStatusCode.valueOf(200));
     }
 
@@ -92,33 +90,11 @@ public class PublisherServiceImpl implements PublisherService {
         return new ResponseEntity<>("Password Changed Successfully",HttpStatusCode.valueOf(200));
     }
 
-    @Override
-    public ResponseEntity<?> getBooks(Long id) {
-        Optional<Publisher> optionalPublisher = publisherRepository.findById(id);
-        if (optionalPublisher.isEmpty()){
-            return new ResponseEntity<>(new UserNotFoundException("Publisher Not Found"), HttpStatusCode.valueOf(404));
-        }
-
-        var publisher = optionalPublisher.get();
-        return new ResponseEntity<>(publisher.getFiles(), HttpStatusCode.valueOf(200));
-    }
 
     @Override
-    public ResponseEntity<?> getBooksByName(String name) {
-        Optional<Publisher> optionalPublisher = publisherRepository.findByName(name);
-        if (optionalPublisher.isEmpty()){
-            return new ResponseEntity<>(new UserNotFoundException("Publisher Not Found"), HttpStatusCode.valueOf(404));
-        }
-
-        var publisher = optionalPublisher.get();
-
-        return new ResponseEntity<>(publisher.getFiles(), HttpStatusCode.valueOf(200));
-    }
-
-    @Override
-    public ResponseEntity<?> updateProfile(PublisherUpdateDto publisherUpdateDto) {
+    public ResponseEntity<?> updateProfile(PublisherUpdateDto publisherUpdateDto, Long id) {
         //get publisher from repo
-        Optional<Publisher> optionalPublisher = publisherRepository.findByName(publisherUpdateDto.getName());
+        Optional<Publisher> optionalPublisher = publisherRepository.findById(id);
 
         //check if exists
         if(optionalPublisher.isEmpty()){
@@ -126,13 +102,11 @@ public class PublisherServiceImpl implements PublisherService {
         }
 
         //check if the new username is already used
-        String name = publisherRepository.findUsernameByName(publisherUpdateDto.getUsername());
-        if (name != null){
+        if (publisherRepository.findByUsername(publisherUpdateDto.getUsername()).isPresent()){
             return new ResponseEntity<>(new UsernameAlreadyExists("Username Already Exists"), HttpStatusCode.valueOf(409));
         }
 
-
-        var publisher = optionalPublisher.get();
+        Publisher publisher = optionalPublisher.get();
 
         publisher.setAbout(publisherUpdateDto.getAbout());
         publisher.setEmail(publisherUpdateDto.getEmail());

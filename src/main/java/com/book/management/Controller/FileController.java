@@ -76,10 +76,14 @@ public class FileController {
         return fileService.getByPublisher(publisher);
     }
 
-    @PostMapping("/update-details/{id}")
-    public ResponseEntity<?> updateFileDetails(@RequestBody FileUpdateDto fileUpdateDto, @PathVariable Long id){
-        return fileService.updateFileDetails(fileUpdateDto, id);
+    @PostMapping("/update-details/{fileid}")
+    public ResponseEntity<?> updateFileDetails(@RequestBody FileUpdateDto fileUpdateDto, @PathVariable Long fileid){
+        return fileService.updateFileDetails(fileUpdateDto, fileid);
     }
 
+    @GetMapping("/category/{category}")
+    public ResponseEntity<?> getBooksByCategory(@PathVariable String category){
+        return fileService.getByCategory(category);
+    }
 
 }
