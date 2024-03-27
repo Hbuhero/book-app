@@ -1,6 +1,6 @@
 package com.book.management.Configuration;
 
-import com.book.management.Configuration.CustomAuthenticationSuccessHandler;
+
 import com.book.management.Model.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class SecurityConfig {
     };
 
     private final String [] publisherUrls = {
-            "/api/v1/publisher/update",
+            "/api/v1/publisher/{id}/update",
             "/api/v1/publisher/{id}/books",
             "/api/v1/files/upload-file",
             "/api/v1/files/delete/{fileid}"
@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     private final String[] customerUrl = {
             "/api/v1/user/change-password",
-            "/api/v1/user/update-profile/{id}"
+            "/api/v1/user/{id}/update-profile"
     };
 
     @Bean

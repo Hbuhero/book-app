@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface PublisherRepository extends JpaRepository<Publisher, Long> {
-    @Query("SELECT * FROM publisher WHERE ")
-    Optional<Publisher> findByName(String name);
 
     @Query(value = "SELECT * FROM publisher WHERE username = ?1", nativeQuery = true)
     Optional<Publisher> findByUsername(String username);
